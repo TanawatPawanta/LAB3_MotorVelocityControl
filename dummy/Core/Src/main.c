@@ -59,10 +59,7 @@ float AvgMotorVelocity;			//rpm
 int MotorControlEnable = 0;		//0 = Unable to control, 1 = Able to control
 float MotorSetRPM;
 
-float error;
-float Kp;
-float Ki;
-float errInt;
+uint32_t dutyCycleOut;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -135,20 +132,20 @@ int main(void)
 	  if (HAL_GetTick() >= timestamp)
 	  {
 		  timestamp = HAL_GetTick() + 10;
-		  AvgRaisingEdgePeriod = IC_Cal_Period() * 0.001;	//In second
-		  AvgMotorVelocity = 1.0/(AvgRaiseedgePeriod * 12.0) * 60 * 64;	//rpm
+		  AvgRaisingEdgePeriod = IC_Cal_Period() * 0.000001;	//In second
+		  AvgMotorVelocity = 1.0/(AvgRaisingEdgePeriod * 12.0) * 60 / 64;	//rpm
 		  switch (MotorControlEnable)
 		  {
 		  	  case 0:
-		  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, duty);
+		  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, dutyCycle);
 			  break;
 
 		  	  case 1:
-		  		  error = MotorSetRPM - AvgMotorVelocity;
-		  		  duty = Cycle
+
+		  		  dutyCycleOut = (0.0027*pow(MotorSetRPM,4.0) - 0.0517*pow(MotorSetRPM,3.0) + 0.321*pow(MotorSetRPM,2.0) + 3.3019*MotorSetRPM + 8.9974)*10;
+		  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, dutyCycleOut);
 		  	  break;
 		  }
-
 
 
 	  }
