@@ -138,11 +138,11 @@ int main(void)
 		  switch (MotorControlEnable)
 		  {
 		  	  case 0:
-		  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, dutyCycle);
+		  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, abs(dutyCycle));
 			  break;
 
 		  	  case 1:
-
+		  		  //MotorSetRPM = abs(MotorSetRPM);
 		  		  dutyCycleOut = (0.0027*pow(MotorSetRPM,4.0) - 0.0517*pow(MotorSetRPM,3.0) + 0.321*pow(MotorSetRPM,2.0) + 3.3019*MotorSetRPM + 8.9974)*10 + plus;
 		  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, dutyCycleOut);
 		  		  if (AvgMotorVelocity < MotorSetRPM && dutyCycleOut <= 1000)
